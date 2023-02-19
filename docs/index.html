@@ -21,15 +21,23 @@
     </style>
 </head>
 <body>
-<div id="swagger-ui"></div>
-<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-<script>
-    window.onload = function() {
-        const ui = SwaggerUIBundle({
-            url: "./test.yaml",
-            dom_id: "#swagger-ui",
-        })
-    }
-</script>
+    <button onclick="updateSwaggerUI('./test1.yaml')">Test 1</button>
+    <button onclick="updateSwaggerUI('./test2.yaml')">Test 2</button>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script>
+        let ui = null;
+        function updateSwaggerUI(url) {
+            if (ui) {
+                ui.destroy();
+            }
+            ui = SwaggerUIBundle({
+                url: url,
+                dom_id: "#swagger-ui",
+            });
+        }
+        // 초기 로드
+        updateSwaggerUI('./test1.yaml');
+    </script>
 </body>
 </html>
