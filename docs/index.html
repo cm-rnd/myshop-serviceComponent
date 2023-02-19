@@ -28,7 +28,7 @@
     <script>
         let ui = null;
         function updateSwaggerUI(url) {
-            if (ui) {
+            if (ui !== null && ui !== undefined) {
                 ui.destroy();
             }
             ui = SwaggerUIBundle({
