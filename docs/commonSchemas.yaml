@@ -1,0 +1,90 @@
+openapi: 3.0.3
+info:
+  title: 공통 스키마
+  description: |-
+    Tmax Commerce 제품 MyShop에서 사용하는 공통 스키마들을 다룬 파일입니다.
+
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+paths: {}
+components:
+  schemas:
+    SortType:
+      description: 정렬 유형
+      type: string
+      enum:
+        - asc
+        - desc
+
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/SortType"
+
+    Page:
+      type: object
+      properties:
+        content:
+          type: array
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numerOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        size:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortType"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+
+    CommonResponse:
+      title: CommonResponse
+      type: object
+      properties:
+        data:
+          type: object
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
