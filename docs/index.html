@@ -1,64 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <title>Swagger UI</title>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"
-    />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
     <style>
-      html {
-        box-sizing: border-box;
-        overflow: -moz-scrollbars-vertical;
-        overflow-y: scroll;
-      }
-      *,
-      *:before,
-      *:after {
-        box-sizing: inherit;
-      }
-      body {
-        margin: 0;
-        background: #fafafa;
-      }
-      .swagger-list {
-        padding: 1rem;
-        display: grid;
-        gap: 1rem;
-      }
-      .swagger-list ul {
-        line-height: 1.8rem;
-        margin: 0.5rem;
-      }
-      .swagger-list li {
-        display: inline-block;
-        padding-right: 1rem;
-      }
-      .swagger-list li:before {
-        content: "◦";
-        position: relative;
-        font-size: 0.8rem;
-        left: -3px;
-      }
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: #fafafa;
+        }
+
+        .swagger-list {
+            padding: 1rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .swagger-list ul {
+            line-height: 1.8rem;
+            margin: 0.5rem;
+        }
+
+        .swagger-list li {
+            display: inline-block;
+            padding-right: 1rem;
+        }
+
+        .swagger-list li:before {
+            content: "◦";
+            position: relative;
+            font-size: 0.8rem;
+            left: -3px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="swagger-list">
-      <details>
-        <summary>공통</summary>
-        <ul>
-          <li>
-            <button
-              onclick="updateSwaggerUI('./commonSchemas.yaml')"
-              id="commonSchemas"
-            >
-              공통 스키마
-            </button>
-          </li>
-        </ul>
-      </details>
+        <details>
+            <summary>공통</summary>
+            <ul>
+                <li>
+                    <button onclick="updateSwaggerUI('./commonSchemas.yaml')" id="commonSchemas">
+                        공통 스키마
+                    </button>
+                </li>
+            </ul>
+            <summary>점주용 메뉴 (도메인)</summary>
+            <ul>
+                <li>
+                    <button onclick="updateSwaggerUI('./entireProduct.yaml')" id="entireProduct">전체상품관리</button>
+                </li>
+            </ul>
+        </details>
     </div>
     <button onclick="updateSwaggerUI('./test1.yaml')" id="test1">Test 1</button>
     <button onclick="updateSwaggerUI('./test2.yaml')" id="test2">Test 2</button>
@@ -67,17 +74,18 @@
     <script src="https://unpkg.com/swagger-ui-dist@4.4.0/swagger-ui-standalone-preset.js"></script>
 
     <script>
-      let ui = null;
-      function updateSwaggerUI(url) {
-        ui = SwaggerUIBundle({
-          url: url,
-          dom_id: "#swagger-ui",
-          presets: [SwaggerUIBundle.presets.apis],
-          layout: "BaseLayout",
-        });
-      }
-      // 초기 로드
-      updateSwaggerUI("./test1.yaml");
+        let ui = null;
+        function updateSwaggerUI(url) {
+            ui = SwaggerUIBundle({
+                url: url,
+                dom_id: "#swagger-ui",
+                presets: [SwaggerUIBundle.presets.apis],
+                layout: "BaseLayout",
+            });
+        }
+        // 초기 로드
+        updateSwaggerUI("./test1.yaml");
     </script>
-  </body>
+</body>
+
 </html>
