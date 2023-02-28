@@ -1,0 +1,410 @@
+openapi: 3.0.3
+info:
+  title: (점주용)매출관리
+  description: |-
+    Tmax Commerce 제품 MyShop에서 사용하는 (점주용)매출관리 페이지와 관련된 API 설계 문서입니다.
+
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://sample.io # 수정 필요
+tags:
+  - name: sales-orders
+    description: 매출 주문 다건 조회와 관련된 API를 정의합니다.
+  - name: sales-order-detail
+    description: 매출 주문 단건 상세조회와 관련된 API를 정의합니다.
+  - name: refund-sales-order
+    description: 환불과 관련된 API를 정의합니다.
+
+paths:
+  /shop/{shopId}/sales-orders:
+    get:
+      tags:
+        - sales-orders
+      summary: 매출로 잡히는 주문들 GET
+      description: 매출로 잡히는 주문들 GET by 조회시작날짜, 조회끝날짜
+      operationId: getSalesOrders
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: userId
+          description: 유저 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: searchStartDate
+          description: 조회시작날짜
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: searchEndDate
+          description: 조회끝날짜
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: page
+          description: 페이지 번호
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: size
+          description: 페이지 크기
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: sort
+          description: 정렬 기준
+          schema:
+            $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<Page<<SalesOrder>>>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /shop/{shopId}/sales-orders/{orderId}:
+    get:
+      tags:
+        - sales-order-detail
+      summary: 주문 상세 정보 GET
+      description: 주문 상세 정보 조회
+      operationId: getSalesOrderDetail
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: path
+          name: orderId
+          description: 주문 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: userId
+          description: 유저 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<SalesOrderDetail>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /shop/{shopId}/sales-orders/{orderId}/refund:
+    put:
+      tags:
+        - refund-sales-order
+      summary: 환불하기
+      description: 결제완료, 현장결제 완료인 주문에 대해서만 사용 가능
+      operationId: refundSalesOrder
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: path
+          name: orderId
+          description: 주문 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: userId
+          description: 유저 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      #TODO: 수정필요
+      responses:
+        default:
+          description: successful operation
+
+components:
+  schemas:
+    # 타입
+    SalesOrderType:
+      description: 매출 주문 유형
+      type: string
+      enum:
+        - TOGOORDER # 포장
+        - RESERVATION # 예약
+        - DELIVERY # 배달
+        - SHIPPING # 배송
+    SalesPaymentStatusType:
+      description: 결제 상태 유형
+      type: string
+      enum:
+        - COMPLETED_PAYMENT # 결제완료
+        - COMPLETED_ONSITE_PAYMENT # 현장결제완료
+        - CANCELED_PAYMENT # 취소
+        - REFUND_PAYMENT # 환불
+
+    # OptionInfo는 다른 곳에서도 쓰일 수 있을 듯. - 공통?
+    OptionInfo:
+      description: 옵션 상세 정보
+      type: object
+      properties:
+        optionId:
+          description: 옵션 아이디
+          type: string
+          format: uuid
+        optionName:
+          description: 옵션명
+          type: string
+        optionPrice:
+          description: 옵션 가격
+          type: integer
+          format: int64
+        optionAmount:
+          description: 옵션 수량
+          type: integer
+          format: int32
+
+    # OrderMenuInfo는 다른 곳에서도 쓰일 수 있을 듯. - 공통?
+    OrderMenuInfo:
+      description: 주문한 메뉴 정보
+      type: object
+      properties:
+        menuId:
+          description: 메뉴 아이디
+          type: string
+          format: uuid
+        menuName:
+          description: 메뉴명
+          type: string
+        menuPrice:
+          description: 메뉴 가격
+          type: integer
+          format: int64
+        menuAmount:
+          description: 메뉴 수량
+          type: integer
+          format: int32
+        optionInfos:
+          description: 옵션 리스트
+          type: array
+          items:
+            $ref: "#/components/schemas/OptionInfo"
+
+    SalesOrder:
+      description: 매출 주문 정보
+      type: object
+      properties:
+        id:
+          description: 주문 아이디
+          type: string
+          format: uuid
+        orderDate:
+          description: 주문 일시
+          type: string
+          format: date-time
+        orderType:
+          description: 주문유형
+          $ref: "#/components/schemas/SalesOrderType"
+        orderNumber:
+          description: 주문번호
+          type: string
+          format: AAA-YYMMDD-000
+          example: OAD-230221-013
+        orderMenuInfos:
+          description: 주문 메뉴 리스트
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderMenuInfo"
+        paymentStatusType:
+          description: 결제 상태 유형
+          $ref: "#/components/schemas/SalesPaymentStatusType"
+        paymentAmount:
+          description: 결제 금액
+          type: integer
+          format: int64
+        # 아래 세 property는 기획이 바뀐다고 들었는데 그 후 소식 x
+        page:
+          description: 페이지 번호
+          type: integer
+          format: inte
+        size:
+          description: 데이터 수 per page
+        sort:
+          description: 정렬 방식
+          $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+
+    SalesOrderDetail:
+      type: object
+      properties:
+        orderId:
+          description: 주문아이디
+          type: string
+          format: uuid
+        orderDate:
+          description: 주문 일시
+          type: string
+          format: date-time
+        orderType:
+          description: 주문유형
+          $ref: "#/components/schemas/SalesOrderType"
+        orderNumber:
+          description: 주문번호
+          type: string
+          format: AAA-YYMMDD-000
+          example: OAD-230221-013
+        completeTime:
+          description: 주문 완료된 시각
+          type: string
+          format: date-time
+        canceledTime:
+          description: 주문 취소된 시각
+          type: string
+          format: date-time
+        pickupNumber:
+          description: 픽업번호
+          type: string
+          format: "000"
+          example: "013"
+        pickupTime:
+          description: 픽업시간
+          type: string
+          format: date-time
+        paymentStatus:
+          description: 결제 상태
+          $ref: "#/components/schemas/SalesPaymentStatusType"
+        orderCancelReason:
+          description: 주문 거부/취소 사유
+          type: string
+        request:
+          description: 요청사항
+          type: string
+        orderMenuInfos:
+          description: 주문 메뉴 리스트
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderMenuInfo"
+        customerContact:
+          description: 고객 연락처
+          type: string
+          format: telNo
+        customerUseCount:
+          description: 고객 이용횟수
+          type: integer
+          format: int32
+        regularCustomerYn:
+          description: 단골 고객 여부
+          type: boolean
+        noShowCount:
+          description: 고객 노쇼 횟수
+          type: integer
+          format: int32
+
+    Page<<SalesOrder>>:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/SalesOrder"
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numerOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "./commonSchemas.yaml#/components/schemas/Pageable"
+        size:
+          type: integer
+          format: int32
+        sort:
+          $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+
+    CommonResponse<<Page<<SalesOrder>>>>:
+      title: CommonResponse<<Page<<SalesOrder>>>>
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Page<<SalesOrder>>"
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
+
+    CommonResponse<<SalesOrderDetail>>:
+      title: CommonResponse<<SalesOrderDetail>>
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SalesOrderDetail"
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
