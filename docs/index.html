@@ -59,10 +59,19 @@
                     </button>
                 </li>
             </ul>
-            <summary>myshopStudio 점주용 메뉴(도메인)</summary>
+        </details>
+        <details>
+            <summary>점주용</summary>
             <ul>
                 <li>
-                    <button onclick="updateSwaggerUI('./entireProduct.yaml')" id="entireProduct">전체상품관리</button>
+                    <button onclick="updateSwaggerUI('./salesManagement.yaml')" id="salesManagement">
+                        매출 관리
+                    </button>
+                </li>
+                <li>
+                    <button onclick="updateSwaggerUI('./entireProduct.yaml')" id="entireProduct">
+                        전체상품관리
+                    </button>
                 </li>
                 <li>
                     <button onclick="updateSwaggerUI('./notification.yaml')" id="entireProduct">알림</button>
@@ -70,8 +79,6 @@
             </ul>
         </details>
     </div>
-    <button onclick="updateSwaggerUI('./test1.yaml')" id="test1">Test 1</button>
-    <button onclick="updateSwaggerUI('./test2.yaml')" id="test2">Test 2</button>
     <div id="swagger-ui"></div>
     <script src="https://unpkg.com/swagger-ui-dist@4.4.0/swagger-ui-bundle.js"></script>
     <script src="https://unpkg.com/swagger-ui-dist@4.4.0/swagger-ui-standalone-preset.js"></script>
