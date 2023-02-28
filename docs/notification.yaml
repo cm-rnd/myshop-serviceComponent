@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: 알림관리
+  description: |-
+    Tmax Commerce 제품 MyShopStudio(점주용)
+      - '알림처리' (도메인) 서비스컴포넌트
+        - notification : openSource 기반 구현시 서비스 컴포넌트 명세
+        - FCM : openSource 기반 구현시 필요한 FCM 관련 요소
+        - WAPL : SuperApp 기반 구현시 서비스 컴포넌트 명세
+  version: 1.0.11
+servers:
+  - url: sample
+tags:
+  - name: notification
+    description: 알림 / 클라이언트에서 서버에 알림 관련 정보를 보내기 위해 사용되는 API
+  - name: FCM
+    description: |-
+      FCM / 클라이언트에서 fcm서버 연동 처리에 필요한 요소 정의
+      - foreground setting
+        - firebase.initializeApp
+        - firebase.getMessaging
+        - firebase.onMessage
+        - Notification.requestPermission
+        - localStorage fcm token 세팅
+        - fcm token 전송
+        
+      - background setting
+        - firebase.initializeApp
+        - firebase.onMackgroundMessage
+        - firebase.shopNotification
+    externalDocs:
+      description: fcm docs
+      url: https://firebase.google.com/docs/cloud-messaging?hl=ko
+  - name: WAPL
+    description: |-
+      슈퍼앱 기반 알림 / 슈퍼앱 사상에서 알림, 채팅 등은 WAPL 기반으로 구현되는 것으로 알고 있음
+      - (TODO) WAPL 알림 UX컴포넌트 존재하는지 / 제공 형태 확인
+      - (TODO) WAPL 알림 IF 파악 (IF 형태에 따른 FE dataset 정의 필요) 
+      - (TODO) WAPL 알림을 UX에서 바로 받을지, DX에서 받고 UX로 넘겨줄 지 정의
+        - UX 처리 시 : 와플UX컴포넌트에 커머스 정보를 어떻게 세팅하는지 확인
+        - DX 처리 시 : UX에 SSE, 소켓 등에 대한 통신방법 추가되어야 함
+
+paths:
+  /notification:
+    get:
+      tags:
+        - notification
+      summary: 알림목록 조회
+      description: 알림창 오픈 시 이전 알림목록을 조회한다.
+      operationId: findNotifications
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    put:
+      tags:
+        - notification
+      summary: 알림읽음 처리
+      description: 알림 읽음 처리 시 읽음상태(isNew)를 읽음(true)으로 변경한다.
+      operationId: updateNotificationStatus
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 알림 읽음 처리 시 읽음상태(isNew)를 읽음(true)으로 변경한다.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Notification"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /notification/token:
+    post:
+      tags:
+        - notification
+      summary: FCM token 전송
+      description: 앱 초기 진입 시 FCM으로 받아온 Token을 서버에게 전송처리한다.
+      operationId: findCategoryById
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: fcmToken
+          in: header
+          description: fcmToken
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: networkStatus
+                  message:
+                    type: string
+                    description: message
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1672134-3462324234-1323
+        date:
+          type: string
+          example: 2023-02-27
+        notificationType:
+          type: string
+          example: ORDER
+        NotificationDetailType:
+          type: string
+          example: CANCEL
+        targetId:
+          type: string
+          example: 123123-12342362132-43545
+        isNew:
+          type: boolean
+          example: false
+      xml:
+        name: category
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: "##default"
+  requestBodies:
+    CategoryCreateInfo:
+      description: 카테고리등록정보
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              name: # <!--- form field name
+                type: string
+              fav_number: # <!--- form field nme
+                type: integer
+
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
