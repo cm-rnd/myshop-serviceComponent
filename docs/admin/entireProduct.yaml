@@ -4,6 +4,10 @@ info:
   description: |-
     Tmax Commerce 제품 MyShopStudio(점주용)
       - '전체상품관리' 메뉴(도메인) 서비스컴포넌트
+
+    Tmax Commerce 제품 MyShop(고객용) : 전체상품관리에서 전체 커버 가능할 것으로 생각됨
+      - '상품목록' 서비스컴포넌트  
+      - '상품상세' 서비스컴포넌트
   version: 1.0.11
 servers:
   - url: sample
