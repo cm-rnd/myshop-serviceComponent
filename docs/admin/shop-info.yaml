@@ -1,0 +1,472 @@
+openapi: 3.0.3
+info:
+  title: MyShop Service Component 설계 - OpenAPI 3.0
+  description: |-
+    Tmax Commerce 제품 MyShop에서 사용되는 Service Component 설계 문서입니다.
+    - 설계형태 : OpenAPI Specification 3.0 기준 REST API
+    - SuperUX의 '외부API 설정하기'에서 REST API 방식을 채택하므로 현 문서에서도 그에 상응하게 정의함
+    - 주요 정의사항 : repository readme 파일 참고
+
+    메인도메인 : 매장 정보 설정 
+    - 기본정보 
+    - 휴무일 
+    - 영업시간 
+    - 부가정보
+
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://sample.io
+tags:
+  - name: shop-info-setting
+    description: 매장 정보 설정 화면(도메인)에서 다루는 API를 정의합니다.
+  - name: basic info
+  - name: holiday info
+  - name: working hour info
+  - name: additional info
+  - name: business info
+paths:
+  /shop-info-setting/basic:
+    get:
+      tags:
+        - basic info
+      summary: get basic shop info
+      description: Get basic shop info by shop id
+      operationId: updatePet
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicInfo'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - basic info
+      summary: Create or Update shop basic info
+      description: Create or Update shop basic info
+      requestBody:
+        description: Create or Update shop basic info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicInfo'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicInfo'
+        '405':
+          description: Invalid input
+  /shop-info-setting/holiday:
+    get:
+      tags:
+        - holiday info
+      summary: get holiday info
+      description: Get shop holiday info by shop id
+      operationId: getHoliday
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Holiday'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - holiday info
+      summary: Create or Update shop holiday info
+      description: Create or Update shop holiday info
+      requestBody:
+        description: Create or Update shop holiday info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Holiday'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Holiday'
+        '405':
+          description: Invalid input
+
+  /shop-info-setting/working-hour:
+    get:
+      tags:
+        - working hour info
+      summary: get working hour info
+      description: Get shop working hour info by shop id
+      operationId: getWorkingHour
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkingHour'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - working hour info
+      summary: Create or Update shop working hour info
+      description: Create or Update shop working hour info
+      requestBody:
+        description: Create or Update shop working hour info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkingHour'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkingHour'
+        '405':
+          description: Invalid input
+  /shop-info-setting/additional:
+    get:
+      tags:
+        - additional info
+      summary: get additional info
+      description: Get shop additional info by shop id
+      operationId: getAdditionalInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdditionalInfo'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - additional info
+      summary: Create or Update shop additional info
+      description: Create or Update shop additional info
+      requestBody:
+        description: Create or Update shop additional info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdditionalInfo'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdditionalInfo'
+        '405':
+          description: Invalid input
+  /shop-info-setting/business:
+    get:
+      tags:
+        - business info
+      summary: get business info
+      description: Get shop business info by shop id
+      operationId: getBusinessInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessInfoResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - business info
+      summary: Create or Update shop business info
+      description: Create or Update shop business info
+      requestBody:
+        description: Create or Update shop business info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessInfoBase'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessInfoBase'
+        '405':
+          description: Invalid input
+components:
+  schemas:
+    BasicInfo:
+      type: object
+      properties:
+        shopId:
+          type: string
+        shopName:
+          type: string
+          example: 랄라 샌드위치
+        businessType:
+          type: string
+          description: Business Type
+          example: RESTAURANT
+          enum:
+            - RESTAURANT
+            - CAFE
+        businessCategory:
+          type: string
+          description: Business Category
+          example: KOREAN
+          enum:
+            - KOREAN
+            - JAPANESE
+            - CHINESE
+            - ASIAN
+            - SNACK_BAR
+            - FAST_FOOD
+            - BUFFET
+            - CAFE
+            - DESSERT
+        shopPhotos:
+          type: string
+          example: ''
+        oneLineDescription:
+          type: string
+          example: ''
+        averagePrice:
+          type: string
+          example: ''
+        address1:
+          type: string
+          example: ''
+        address2:
+          type: string
+          example: ''
+        phoneNumber:
+          type: string
+          example: '010-1234-1234'
+    Holiday:
+      type: object
+      properties:
+        hasHoliday:
+          type: boolean
+          example: true
+        regular:
+          type: array
+          items:
+            $ref: '#/components/schemas/Regular'
+        isNationalHoliday:
+          type: boolean
+          example: true
+        extra:
+          type: array
+          items:
+            $ref: '#/components/schemas/Extra'
+    Regular:
+      type: object
+      properties:
+        id:
+          type: string
+        routine:
+          type: string
+          example: 'EVERY'
+          enum:
+            - EVERY
+            - EVERY_1ST
+            - EVERY_2ND
+            - EVERY_3RD
+            - EVERY_4TH
+            - EVERY_5TH
+            - EVERY_LAST
+        dayOfWeek:
+          type: string
+          example: SUNDAY
+          enum:
+            - SUNDAY
+            - MONDAY
+            - TUESDAY
+            - WEDNESDAY
+            - THURSDAY
+            - FRIDAY
+            - SATURDAY
+    Extra:
+      type: object
+      properties:
+        id:
+          type: string
+        holiday:
+          type: string
+
+    WorkingHour:
+      type: object
+      properties:
+        workingHourInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingHourItem'
+        notice:
+          type: string
+          example: ''
+    WorkingHourItem:
+      type: object
+      properties:
+        id:
+          type: string
+        workingDays:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 1
+        aroundTheClock:
+          type: boolean
+          example: true
+        workingHour:
+          $ref: '#/components/schemas/HourRange'
+        hasBreakTime:
+          type: boolean
+          example: true
+        breakTime:
+          $ref: '#/components/schemas/HourRange'
+    HourRange:
+      type: object
+      properties:
+        from:
+          type: string
+          example: '00:00'
+        to:
+          type: string
+          example: '00:00'
+    AdditionalInfo:
+      type: object
+      properties:
+        tableNumbers:
+          type: integer
+          format: int64
+          example: 10
+        tableTypes:
+          $ref: '#/components/schemas/Check'
+        amenities:
+          $ref: '#/components/schemas/Check'
+        hashtags:
+          type: array
+          items:
+            type: string
+            example: '분위기맛집'
+    Check:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          example: IN_STORE_MEAL
+        checked:
+          type: boolean
+          example: true
+    BusinessInfoBase:
+      required:
+        - corporationType
+        - businessRegistrationNumber
+        - companyName
+        - representativeName
+        - businessAddress1
+        - businessAddress2
+        - businessType
+        - businessItem
+      type: object
+      properties:
+        corporationType:
+          type: string
+          description: 사업자 유형
+          enum:
+            - SOLE_PROPRIETORSHIP
+            - CORPORATE
+        businessRegistrationNumber:
+          type: string
+          description: 사업자 등록번호
+          example: '123-45-67890'
+        companyName:
+          type: string
+          description: 상호명 or 법인명
+        representativeName:
+          type: string
+          description: 대표자명
+        corporationNumber?:
+          type: string
+          description: 법인 등록번호
+        businessAddress1:
+          type: string
+        businessAddress2:
+          type: string
+        businessType:
+          type: string
+          description: 업태
+        businessItem:
+          type: string
+          description: 종목
+        businessRegistrationCertificate:
+          type: string
+          format: binary
+          description: 사업자 등록증
+        businessCommencementCertificate:
+          type: string
+          format: binary
+          description: 영업신고증
+        mailOrderSalesRegistrationNumber:
+          type: string
+          description: 통신판매업 신고번호
+        hygieneGrade:
+          type: string
+          description: 위생등급
+    BusinessInfoResponse:
+      required:
+        - businessInfo
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [NOT_SUBMITTED, IN_REVIEW, APPROVED, REJECTED]
+        rejectedReason:
+          type: string
+        businessInfo:
+          $ref: '#/components/schemas/BusinessInfoBase'
