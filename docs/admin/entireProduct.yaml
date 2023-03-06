@@ -58,13 +58,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Category"
-          application/xml:
-            schema:
-              $ref: "#/components/schemas/Category"
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/Category"
+              $ref: "#/components/schemas/CategoryRegisterInfo"
         required: true
       responses:
         "200":
@@ -91,12 +85,6 @@ paths:
         description: 등록된 카테고리의 기본 값을 수정한다.
         content:
           application/json:
-            schema:
-              $ref: "#/components/schemas/Category"
-          application/xml:
-            schema:
-              $ref: "#/components/schemas/Category"
-          application/x-www-form-urlencoded:
             schema:
               $ref: "#/components/schemas/Category"
         required: true
@@ -142,12 +130,6 @@ paths:
               type: array
               items:
                 $ref: "#/components/schemas/Category"
-          application/xml:
-            schema:
-              $ref: "#/components/schemas/Category"
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/Category"
         required: true
       responses:
         "200":
@@ -225,7 +207,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Product"
+              $ref: "#/components/schemas/ProductRegisterInfo"
         required: true
       responses:
         "200":
@@ -716,6 +698,20 @@ components:
       xml:
         name: category
 
+    CategoryRegisterInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 카테고리명
+          example: doggie
+        description:
+          type: string
+          description: 카테고리 설명
+          example: this is sample description
+      xml:
+        name: category
+
     Product:
       type: object
       properties:
@@ -740,6 +736,46 @@ components:
           type: number
           description: 상품 순서
           example: 0
+        image:
+          type: array
+          items:
+            type: string
+          description: 상품 이미지
+          example: url
+        salesStatus:
+          type: string
+          description: 상품 판매 상태
+          example: test
+        isNew:
+          type: boolean
+          description: 신상품 여부
+          example: Y
+        isRecommand:
+          type: boolean
+          description: 상품추천 여부
+          example: Y
+        orderType:
+          type: string
+          description: 상품 주문 타입
+          example: shipping
+      xml:
+        name: product
+
+    ProductRegisterInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 상품명
+          example: chicken
+        description:
+          type: string
+          description: 상품 설명
+          example: this is sample description
+        price:
+          type: number
+          description: 가격
+          example: 10000
         image:
           type: array
           items:
