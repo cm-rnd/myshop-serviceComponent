@@ -1,0 +1,656 @@
+openapi: 3.0.3
+info:
+  title: (점주용)주문현황
+  description: |-
+    Tmax Commerce 제품 MyShop에서 사용하는 (점주용)주문현황 페이지와 관련된 API 설계 문서입니다.
+    (23.03.02 기준 기획 기준)
+    - 주문현황
+      - 전체주문
+      - 포장주문 
+      - 배달주문  (기획 미정)
+      - 예약
+        - 기획 
+          - 1. 유저가 예약하면 자동 예약 승인(즉, 포장처럼 신규주문>진행중>준비완료와 같은 상태 변화로 흘러가지 않음)
+          - 2. 점주가 예약 취소 또는 유저가 예약 취소할 수 있음. 점주가 예약을 취소하는 경우, 이에 대해 유저가 알 수 있어야 함 유저가 예약을 취소하는 경우, 이에 대해 점주가 알 수 있어야 함 (어떤 알림 방식인지는 미정)
+          - 3. 접수 : 자동 예약 승인이기 때문에 점주의 접수 과정 없음
+          - 4. 시간 설정 : 예약 설정에서 여러가지 예약 시간을 설정할 수 있음(ux 설계중)
+
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://sample.io # 수정 필요
+tags:
+  - name: shop-command-controller
+    description: |-
+      샵의 상태를 변화하는 것과 관련된 API를 정의합니다.
+      - TODO
+        - 포장 주문 예상 소요시간 설정
+        - 예약 주문 예상 소요시간 설정
+          - 예약 설정에서 여러가지 예약 시간을 설정할 수 있음(ux 설계중) 
+        - 배달 주문 예상 소요시간 설정 (예상)
+  - name: to-go-order-status-query-controller
+    description: 포장주문 현황의 주문들의 get method 와 관련된 API를 정의합니다
+  - name: deliver-order-status-query-controller
+    description: |-
+      배달 주문 현황의 주문들의 get method 와 관련된 API를 정의합니다
+      - TODO (예상)
+        - 배달 주문 다건 조회
+        - 배달 주문 상세정보 단건 조회
+  - name: reservation-order-status-query-controller
+    description: |-
+      예약 주문 현황의 주문들의 get method 와 관련된 API를 정의합니다
+      - TODO (예상)
+        - 예약 주문 다건 조회
+        - 예약 주문 상세정보 단건 조회
+  - name: to-go-order-status-command-controller
+    description: 포장주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+  - name: deliver-order-status-command-controller
+    description: |-
+      배달주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+      - TODO (예상)
+        - 배달 주문 상태 변경
+        - 배달 주문 현장결제 상태 변경
+  - name: reservation-order-status-command-controller
+    description: |-
+      예약주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+      - TODO (예상)
+        - 예약 주문 상태 변경
+          - 포장과 달리 "유저가 예약하면 자동 예약 승인(즉, 포장처럼 신규주문>진행중>준비완료와 같은 상태 변화로 흘러가지 않음)" 유의하며 설계
+        - 예약 주문 현장결제 상태 변경
+
+  # - name: to-go-order
+  #   description: 포장주문의 주문 현황과 관련된 API를 정의합니다.
+  # - name: to-go-order/to-go-order-command-controller
+  #   description: 포장주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+  # - name: to-go-order/to-go-order-query-controller
+  #   description: 포장 주문의 get method와 관련된 API를 정의합니다.
+  # - name: deliver-order
+  #   description: 배달주문의 주문 현황과 관련된 API를 정의합니다.
+  # - name: deliver-order/deliver-order-command-controller
+  #   description: 배달주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+  # - name: reservation-order
+  #   description: 예약주문의 주문 현황과 관련된 API를 정의합니다.
+  # - name: reservation-order/reservation-order-command-controller
+  #   description: 예약주문의 상태를 변화하는 것과 관련된 API를 정의합니다.
+
+paths:
+  /shop/{shopId}/togo-order-availability:
+    patch:
+      tags:
+        - shop-command-controller
+      summary: 포장 주문 받을 수 있게 / 없게 toggle하는 api
+      operationId: patchTogoOrderAvailability
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /shop/{shopId}/deliver-order-availability:
+    patch:
+      tags:
+        - shop-command-controller
+      summary: 배달 주문 받을 수 있게 / 없게 toggle하는 api
+      operationId: patchDeliverOrderAvailability
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /shop/{shopId}/reservation-order-availability:
+    patch:
+      tags:
+        - shop-command-controller
+      summary: 예약 주문 받을 수 있게 / 없게 toggle하는 api
+      operationId: patchReservationOrderAvailability
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /shop/{shopId}/togo-orders:
+    get:
+      tags:
+        - to-go-order-status-query-controller
+      summary: 포장 주문 다건 조회
+      description: 포장 주문 다건 조회
+      operationId: getToGoOrders
+      parameters:
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: searchStartDate
+          description: 조회시작날짜
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: searchEndDate
+          description: 조회끝날짜
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: page
+          description: 페이지 번호
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: size
+          description: 페이지 크기
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: sort
+          description: 정렬 기준
+          schema:
+            $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+        - in: query
+          name: status
+          description: 주문 상태
+          schema:
+            $ref: "#/components/schemas/ToGoOrderStatusType"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<Page<<ToGoOrderInfo>>>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /togo-order/{toGoOrderId}:
+    get:
+      tags:
+        - to-go-order-status-query-controller
+      summary: 포장 주문 세부정보 (단건) 조회
+      description: 포장 주문 세부정보 조회
+      operationId: getToGoOrderDetail
+      parameters:
+        - in: path
+          name: toGoOrderId
+          description: 포장 주문 아이디
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+  /customer/{customerId}/shop/{shopId}/togo-order/{toGoOrderId}:
+    patch:
+      tags:
+        - to-go-order-status-command-controller
+      summary: 포장 주문 상태 변경
+      description: 포장 주문 상태 변경
+      operationId: changeToGoOrderStatusUsingPATCH
+      parameters:
+        - in: path
+          name: customerId
+          description: 고객 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: toGoOrderId
+          description: 포장 주문 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeToGoOrderStatusRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /customer/{customerId}/shop/{shopId}/togo-order/{toGoOrderId}/onsite-payment:
+    patch:
+      tags:
+        - to-go-order-status-command-controller
+      summary: 포장주문 현장결제 상태 변경
+      description: 포장 주문 현장결제 상태 변경
+      operationId: changeToGoOrderOnSitePaymentStatusUsingPATCH
+      parameters:
+        - in: path
+          name: customerId
+          description: 고객 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: shopId
+          description: 샵 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: toGoOrderId
+          description: 포장 주문 아이디
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: onsitePaymentFinished
+          description: 현장결제 완료 여부
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+components:
+  schemas:
+    CategoryType:
+      description: 카테고리
+      type: string
+      enum:
+        - APPAREL_ACCESSORIES
+        - BABY
+        - BEAUTY
+        - ELECTRONICS
+        - ETC
+        - FASHION
+        - FOOD
+        - HOME
+    ItemOptionInfo:
+      description: 옵션 정보
+      type: object
+      properties:
+        id:
+          description: 옵션아이디
+          type: string
+          format: uuid
+        count:
+          description: 옵션 수량
+          type: integer
+          format: int32
+        name:
+          description: 옵션명
+          type: string
+        price:
+          description: 옵션 가격
+          type: integer
+          format: int32
+    ItemOptionGroupInfo:
+      description: 옵션 그룹 정보
+      type: object
+      properties:
+        id:
+          description: 옵션 그룹 아이디
+          type: string
+          format: uuid
+        name:
+          description: 옵션 그룹 이름
+          type: string
+        itemOptions:
+          description: 옵션 배열
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemOptionInfo"
+    ItemInfo:
+      description: 아이템 정보
+      type: object
+      properties:
+        id:
+          description: 아이템 아이디
+          type: string
+          format: uuid
+        name:
+          description: 아이템 이름
+          type: string
+        count:
+          description: 아이템 수량
+          type: integer
+          format: int32
+        itemOptionGroups:
+          description: 옵션그룹 배열
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemOptionGroupInfo"
+        price:
+          description: 아이템 가격
+          type: integer
+          format: int32
+    ToGoOrderStatusType:
+      description: 포장 주문 상태 타입
+      type: string
+      enum:
+        - CANCELLED_BY_CUSTOMER
+        - CANCELLED_BY_NO_SHOW
+        - CANCELLED_BY_SHOP
+        - CANCELLED_BY_SOLD_OUT
+        - COMPLETED
+        - NEW
+        - ONGOING
+        - PICKUP_COMPLETED
+        - REJECTED_BY_SHOP
+        - REJECTED_BY_SOLD_OUT
+    UserInfo:
+      description: 유저 정보
+      type: object
+      properties:
+        nickname:
+          description: 유저 닉네임
+          type: string
+    CustomerInfo:
+      description: 고객 정보
+      type: object
+      properties:
+        noShowCount:
+          description: 노쇼 횟수
+          type: integer
+          format: int64
+        phoneNumber:
+          description: 전화번호
+          type: string
+        useCount:
+          description: 이용 횟수
+          type: integer
+          format: int64
+    ShopInfo:
+      description: 샵 정보
+      type: object
+      properties:
+        category:
+          description: 카테고리
+          $ref: "#/components/schemas/CategoryType"
+        companyName:
+          description: 업체명
+          type: string
+        domain:
+          description: 도메인명
+          type: string
+        owner:
+          description: 업체 주인
+          $ref: "#/components/schemas/UserInfo"
+        shopId:
+          description: 업체 아이디
+          type: string
+          format: uuid
+        togoAvailable:
+          description: 포장 주문 받을 수 있는지 여부
+          type: boolean
+        deliverAvailable:
+          description: 배달 주문 받을 수 있는지 여부
+          type: boolean
+        reservationAvailable:
+          description: 예약 주문 받을 수 있는지 여부
+          type: boolean
+    ToGoOrderInfo:
+      description: 배달주문정보
+      type: object
+      properties:
+        createdAt:
+          description: 주문이 생성된 시각
+          type: string
+          format: date-time
+        itemCount:
+          description: 아이템 갯수
+          type: integer
+          format: int32
+        onSitePayment:
+          description: 현장 결제 여부
+          type: boolean
+        onsitePaymentFinished:
+          description: 현장 결제 완료되었는지 여부
+          type: boolean
+        orderNumber:
+          description: 주문번호
+          type: string
+        pickupTime:
+          description: 픽업 시간
+          type: string
+          format: date-time
+        shopId:
+          description: 샵 아이디
+          type: string
+          format: $uuid
+        toGoOrderId:
+          description: 포장 주문 아이디
+          type: string
+          format: uuid
+        toGoOrderStatus:
+          description: 주문 상태
+          $ref: "#/components/schemas/ToGoOrderStatusType"
+        totalPrice:
+          description: 전체 가격
+          type: integer
+          format: int32
+        updatedAt:
+          description: 주문이 업데이트 된 시각
+          type: string
+          format: date-time
+    ToGoOrderDetailInfo:
+      description: 배달주문상세정보
+      type: object
+      properties:
+        createdAt:
+          description: 주문이 생성된 시각
+          type: string
+          format: date-time
+        customerInfo:
+          $ref: "#/components/schemas/CustomerInfo"
+        items:
+          description: 아이템 배열
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemInfo"
+        onSitePayment:
+          description: 현장 결제 여부
+          type: boolean
+        onsitePaymentFinished:
+          description: 현장 결제 완료되었는지 여부
+          type: boolean
+        orderNumber:
+          description: 주문번호
+          type: string
+        pickupTime:
+          description: 픽업 시간
+          type: string
+          format: date-time
+        request:
+          description: 요청사항
+          type: string
+        shopId:
+          description: 샵 아이디
+          type: string
+          format: $uuid
+        toGoOrderId:
+          description: 포장 주문 아이디
+          type: string
+          format: uuid
+        toGoOrderStatus:
+          description: 주문 상태
+          $ref: "#/components/schemas/ToGoOrderStatusType"
+        totalPrice:
+          description: 전체 가격
+          type: integer
+          format: int32
+        updatedAt:
+          description: 주문이 업데이트 된 시각
+          type: string
+          format: date-time
+    CommonResponse<<ShopInfo>>:
+      title: CommonResponse<<ShopInfo>>
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ShopInfo"
+        errorCode:
+          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+        message:
+          type: string
+    CommonResponse<<ToGoOrderDetailInfo>>:
+      title: CommonResponse<<ToGoOrderDetailInfo>>
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ToGoOrderDetailInfo"
+        errorCode:
+          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+        message:
+          type: string
+    Page<<ToGoOrderInfo>>:
+      title: Page<<ToGoOrderInfo>>
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ToGoOrderInfo"
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numerOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "./commonSchemas.yaml#/components/schemas/Pageable"
+        size:
+          type: integer
+          format: int32
+        sort:
+          $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    CommonResponse<<Page<<ToGoOrderInfo>>>>:
+      title: CommonResponse<<Page<<ToGoOrderInfo>>>>
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Page<<ToGoOrderInfo>>"
+        errorCode:
+          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+        message:
+          type: string
+    ChangeToGoOrderStatusRequest:
+      description: 포장 주문 상태 변경 요청
+      type: object
+      properties:
+        accept:
+          type: boolean
+        status:
+          $ref: "#/components/schemas/ToGoOrderStatusType"
