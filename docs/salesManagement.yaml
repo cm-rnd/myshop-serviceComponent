@@ -378,15 +378,7 @@ components:
         data:
           $ref: "#/components/schemas/Page<<SalesOrder>>"
         errorCode:
-          type: string
-          enum:
-            - DUPLICATE
-            - FORBIDDEN
-            - ILLEGAL_STATE
-            - INTERNAL_SERVER_ERROR
-            - INVALID_PARAMETER
-            - NOT_FOUND
-            - UNAUTHORIZED
+          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
         message:
           type: string
 
@@ -397,14 +389,6 @@ components:
         data:
           $ref: "#/components/schemas/SalesOrderDetail"
         errorCode:
-          type: string
-          enum:
-            - DUPLICATE
-            - FORBIDDEN
-            - ILLEGAL_STATE
-            - INTERNAL_SERVER_ERROR
-            - INVALID_PARAMETER
-            - NOT_FOUND
-            - UNAUTHORIZED
+          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
         message:
           type: string
