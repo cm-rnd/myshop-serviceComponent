@@ -1,0 +1,940 @@
+openapi: 3.0.3
+info:
+  title: 전체상품관리
+  description: |-
+    Tmax Commerce 제품 MyShopStudio(점주용)
+      - '전체상품관리' 메뉴(도메인) 서비스컴포넌트
+
+    Tmax Commerce 제품 MyShop(고객용) : 전체상품관리에서 전체 커버 가능할 것으로 생각됨
+      - '상품목록' 서비스컴포넌트  
+      - '상품상세' 서비스컴포넌트
+  version: 1.0.11
+servers:
+  - url: sample
+tags:
+  - name: category
+    description: 상품 내 카테고리
+  - name: product
+    description: 상품 정보
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: option
+    description: 옵션 정보
+  - name: origins
+    description: 원산지 정보
+paths:
+  /product/category:
+    get:
+      tags:
+        - category
+      summary: 카테고리목록 조회
+      description: 최초 화면(전체메뉴관리/메뉴관리탭) 진입 시 카테고리 목록을 조회한다.
+      operationId: findCategories
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      tags:
+        - category
+      summary: 카테고리 등록
+      description: 카테고리 등록버튼 클릭 시 카테고리를 등록한다
+      operationId: addCategory
+      requestBody:
+        description: 카테고리를 신규로 등록한다
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRegisterInfo"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+  /product/category/{categoryId}:
+    put:
+      tags:
+        - category
+      summary: 카테고리 수정
+      description: 카테고리 수정버튼 클릭 시 카테고리를 수정한다
+      operationId: updateCategory
+      parameters:
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 등록된 카테고리의 기본 값을 수정한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    delete:
+      tags:
+        - category
+      summary: 카테고리 삭제
+      description: 카테고리 삭제버튼 클릭 시 카테고리를 삭제한다
+      operationId: deleteCategory
+      parameters:
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+  /product/category/order:
+    put:
+      tags:
+        - category
+      summary: 카테고리 순서 수정
+      description: 카테고리 순서수정 버튼 클릭 시 카테고리 순서를 수정한다
+      operationId: updateCategoryOrder
+      requestBody:
+        description: 등록된 카테고리의 순서를 수정한다.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Category"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /product/{categoryId}:
+    get:
+      tags:
+        - product
+      summary: 카테고리별 상품목록 조회 / 검색어별 상품목록 조회 (optional)
+      description: |-
+        - 카테고리item 클릭 시 cateogoryId로 카테고리에 해당하는 상품목록을 조회한다.
+        - cateogory별 상품목록에서 키워드 입력 시 해당하는 상품목록을 조회한다. (optional)
+      operationId: findProductsByCategoryIdAndKeyword
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: keyword
+          schema:
+            type: string
+        - name: orderType
+          in: query
+          description: orderType
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryWithProducts"
+
+    post:
+      tags:
+        - product
+      summary: 상품 등록
+      description: 상품 등록버튼 클릭 시 상품을 등록한다
+      operationId: addProduct
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 상품을 신규로 등록한다
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductRegisterInfo"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryWithProducts"
+
+  /product/{categoryId}/{productId}:
+    put:
+      tags:
+        - product
+      summary: 상품 수정
+      description: 상품 수정버튼 클릭 시 상품을 수정한다
+      operationId: updateProduct
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 상품을 수정한다
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryWithProducts"
+
+    delete:
+      tags:
+        - product
+      summary: 상품 삭제
+      description: 상품 삭제버튼 클릭 시 상품을 삭제한다
+      operationId: deleteProduct
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryWithProducts"
+
+  /product/{categoryId}/order:
+    put:
+      tags:
+        - product
+      summary: 상품 순서 수정
+      description: 상품 순서수정 버튼 클릭 시 카테고리 순서를 수정한다
+      operationId: updateProductOrder
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          description: categoryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 등록된 카테고리의 순서를 수정한다.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Category"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Category"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Category"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /option-group:
+    get:
+      tags:
+        - option
+      summary: 옵션그룹목록 조회
+      description: |-
+        - 옵션그룹 목록을 조회한다.
+      operationId: findOptionGroups
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroup"
+
+    post:
+      tags:
+        - option
+      summary: 옵션그룹 생성
+      description: 옵션그룹을 생성한다.
+      operationId: createOptionGroup
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 옵션그룹을 생성한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OptionGroup"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroup"
+
+  /option-group/{optionGroupId}:
+    put:
+      tags:
+        - option
+      summary: 옵션그룹 수정
+      description: 옵션그룹을 수정한다.
+      operationId: updateOptionGroup
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 옵션그룹을 수정한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OptionGroup"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroup"
+
+    delete:
+      tags:
+        - option
+      summary: 옵션그룹 삭제
+      description: 옵션그룹을 삭제한다.
+      operationId: deleteOptionGroup
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroup"
+
+  /option-group/{optionGroupId}/option:
+    post:
+      tags:
+        - option
+      summary: 옵션 생성
+      description: 옵션을 생성한다.
+      operationId: createOption
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 옵션을 생성한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Option"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroupWithOption"
+
+  /option-group/{optionGroupId}/option/{optionId}:
+    put:
+      tags:
+        - option
+      summary: 옵션 수정
+      description: 옵션을 수정한다.
+      operationId: updateOption
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+        - name: optionId
+          in: path
+          description: optionId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 옵션을 수정한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Option"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroupWithOption"
+
+    delete:
+      tags:
+        - option
+      summary: 옵션 삭제
+      description: 옵션을 삭제한다.
+      operationId: deleteOption
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+        - name: optionId
+          in: path
+          description: optionId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroupWithOption"
+
+  /option-group/{optionGroupId}/option/order:
+    put:
+      tags:
+        - option
+      summary: 옵션 순서 수정
+      description: 옵션 순서를 수정한다.
+      operationId: updateOptionOrder
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 옵션을 수정한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OptionGroupWithOption"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroupWithOption"
+
+  /option-group/{optionGroupId}/connect:
+    put:
+      tags:
+        - option
+      summary: 옵션그룹 연결
+      description: |-
+        - 옵션그룹을 카테고리와 연결한다.
+        - 옵션그룹을 메뉴와 연결한다.
+      operationId: connectOptionGroup
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: optionGroupId
+          in: path
+          description: optionGroupId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: |-
+          - 옵션그룹을 카테고리와 연결한다.
+          - 옵션그룹을 메뉴와 연결한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryWithProducts"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionGroup"
+
+  /origins:
+    get:
+      tags:
+        - origins
+      summary: 원산지표기정보 조회
+      description: 원산지표기정보를 조회한다.
+      operationId: findOrigins
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Origins"
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 카테고리Id
+          example: 10
+        name:
+          type: string
+          description: 카테고리명
+          example: doggie
+        description:
+          type: string
+          description: 카테고리 설명
+          example: this is sample description
+        order:
+          description: 카테고리 순서
+          type: number
+          example: 0
+      xml:
+        name: category
+
+    CategoryRegisterInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 카테고리명
+          example: doggie
+        description:
+          type: string
+          description: 카테고리 설명
+          example: this is sample description
+      xml:
+        name: category
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 상품Id
+          example: 10
+        name:
+          type: string
+          description: 상품명
+          example: chicken
+        description:
+          type: string
+          description: 상품 설명
+          example: this is sample description
+        price:
+          type: number
+          description: 가격
+          example: 10000
+        order:
+          type: number
+          description: 상품 순서
+          example: 0
+        image:
+          type: array
+          items:
+            type: string
+          description: 상품 이미지
+          example: url
+        salesStatus:
+          type: string
+          description: 상품 판매 상태
+          example: test
+        isNew:
+          type: boolean
+          description: 신상품 여부
+          example: Y
+        isRecommand:
+          type: boolean
+          description: 상품추천 여부
+          example: Y
+        orderType:
+          type: string
+          description: 상품 주문 타입
+          example: shipping
+      xml:
+        name: product
+
+    ProductRegisterInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 상품명
+          example: chicken
+        description:
+          type: string
+          description: 상품 설명
+          example: this is sample description
+        price:
+          type: number
+          description: 가격
+          example: 10000
+        image:
+          type: array
+          items:
+            type: string
+          description: 상품 이미지
+          example: url
+        salesStatus:
+          type: string
+          description: 상품 판매 상태
+          example: test
+        isNew:
+          type: boolean
+          description: 신상품 여부
+          example: Y
+        isRecommand:
+          type: boolean
+          description: 상품추천 여부
+          example: Y
+        orderType:
+          type: string
+          description: 상품 주문 타입
+          example: shipping
+      xml:
+        name: product
+
+    CategoryWithProducts:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 카테고리Id
+          example: 10
+        name:
+          type: string
+          example: doggie
+          description: 카테고리명
+        description:
+          type: string
+          description: 카테고리 설명
+          example: this is sample description
+        order:
+          type: number
+          description: 카테고리 순서
+          example: 0
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+          description: 상품
+
+    OptionGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 옵션그룹Id
+          example: 10
+        name:
+          type: string
+          description: 옵션그룹명
+          example: 소스추가
+        required:
+          type: boolean
+          description: 필수옵션여부
+          example: true
+        salesStatus:
+          type: string
+          description: 옵션그룹 판매 상태
+          example: test
+        choiceCount:
+          type: number
+          description: 옵션 선택 수
+      xml:
+        name: optionGroup
+
+    Option:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 옵션Id
+          example: 10
+        name:
+          type: string
+          description: 옵션명
+          example: 핫소스
+        price:
+          type: number
+          description: 옵션가격
+          example: true
+        salesStatus:
+          type: string
+          description: 옵션 판매 상태
+          example: test
+        order:
+          type: number
+          description: 옵션 순서
+          example: 1
+      xml:
+        name: option
+
+    OptionGroupWithOption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 옵션그룹Id
+          example: 10
+        name:
+          type: string
+          description: 옵션그룹명
+          example: 소스추가
+        required:
+          type: boolean
+          description: 필수옵션여부
+          example: true
+        salesStatus:
+          type: string
+          description: 옵션그룹 판매 상태
+          example: test
+        choiceCount:
+          type: number
+          description: 옵션 선택 수
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/Option"
+      xml:
+        name: optionGroupWithOption
+
+    Origins:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: originsId
+          example: 10
+        description:
+          type: string
+          description: 원산지표기정보
+          example: testetstsets
+      xml:
+        name: origins
+
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header

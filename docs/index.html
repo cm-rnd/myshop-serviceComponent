@@ -81,7 +81,7 @@
         <ul>
           <li>
             <button
-              onclick="updateSwaggerUI('./salesManagement.yaml')"
+              onclick="updateSwaggerUI('./admin/salesManagement.yaml')"
               id="salesManagement"
             >
               매출 관리
@@ -89,7 +89,7 @@
           </li>
           <li>
             <button
-              onclick="updateSwaggerUI('./entireProduct.yaml')"
+              onclick="updateSwaggerUI('./admin/entireProduct.yaml')"
               id="entireProduct"
             >
               전체상품관리
@@ -97,18 +97,60 @@
           </li>
           <li>
             <button
-              onclick="updateSwaggerUI('./notification.yaml')"
+              onclick="updateSwaggerUI('./admin/notification.yaml')"
               id="notification"
             >
-              알림
+              알림관리
+            </button>
+          </li>
+          <li>
+            <button onclick="updateSwaggerUI('./admin/feed.yaml')" id="feed">
+              피드관리
             </button>
           </li>
           <li>
             <button
-              onclick="updateSwaggerUI('./orderStatus.yaml')"
+              onclick="updateSwaggerUI('./admin/shop-info.yaml')"
+              id="shop-info"
+            >
+              피드관리
+            </button>
+          </li>
+          <li>
+            <button
+              onclick="updateSwaggerUI('./admin/announcement.yaml')"
+              id="shop-info"
+            >
+              공지사항관리
+            </button>
+          </li>
+          <li>
+            <button
+              onclick="updateSwaggerUI('./admin/orderStatus.yaml')"
               id="orderStatus"
             >
               주문현황
+            </button>
+          </li>
+        </ul>
+      </details>
+      <details>
+        <summary>고객용</summary>
+        <ul>
+          <li>
+            <button
+              onclick="updateSwaggerUI('./custom/product.yaml')"
+              id="feed"
+            >
+              상품목록
+            </button>
+          </li>
+          <li>
+            <button
+              onclick="updateSwaggerUI('./custom/product.yaml')"
+              id="feed"
+            >
+              상품상세
             </button>
           </li>
         </ul>

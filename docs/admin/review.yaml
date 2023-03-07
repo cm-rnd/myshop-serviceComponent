@@ -1,0 +1,667 @@
+openapi: 3.0.3
+info:
+  description: Api Documentation
+  version: "1.0"
+  title: Api Documentation
+  termsOfService: urn:tos
+  contact: {}
+tags:
+  - name: basic-error-controller
+    description: Basic Error Controller
+  - name: review-command-controller
+    description: Review Command Controller
+  - name: review-query-controller
+    description: Review Query Controller
+paths:
+  /review/{reviewId}:
+    get:
+      tags:
+        - review-query-controller
+      summary: retrieveReview
+      operationId: retrieveReviewUsingGET
+      parameters:
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_ReviewInfo_"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+    delete:
+      tags:
+        - review-command-controller
+      summary: deleteReview
+      operationId: deleteReviewUsingDELETE
+      parameters:
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_object_"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    patch:
+      tags:
+        - review-command-controller
+      summary: updateReview
+      operationId: updateReviewUsingPATCH
+      parameters:
+        - name: rating
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+        - name: reviewContent
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_ReviewInfo_"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+  /review/{reviewId}/answer:
+    delete:
+      tags:
+        - review-command-controller
+      summary: deleteAnswerOfReview
+      operationId: deleteAnswerOfReviewUsingDELETE
+      parameters:
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_ReviewInfo_"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    patch:
+      tags:
+        - review-command-controller
+      summary: updateAnswerOfReview
+      operationId: updateAnswerOfReviewUsingPATCH
+      parameters:
+        - name: answer
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_ReviewInfo_"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+  /shop/{shopId}/review:
+    get:
+      tags:
+        - review-query-controller
+      summary: retrieveReviews
+      operationId: retrieveReviewsUsingGET
+      parameters:
+        - name: endDateTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: paged
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: pageNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: shopId
+          in: path
+          description: shopId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sort.sorted
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: sort.unsorted
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: startDateTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - ANSWER_COMPLETE
+              - ANSWER_INCOMPLETE
+        - name: unpaged
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonResponse_ReviewsInfo_"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+  /error:
+    get:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingGET
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+    head:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingHEAD
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    post:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPOST
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "201":
+          description: Created
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+    put:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPUT
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "201":
+          description: Created
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+    delete:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingDELETE
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    options:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingOPTIONS
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+    patch:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPATCH
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+components:
+  schemas:
+    View:
+      type: object
+      properties:
+        contentType:
+          type: string
+    ModelAndView:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        model:
+          type: object
+        modelMap:
+          type: object
+          additionalProperties:
+            type: object
+        reference:
+          type: boolean
+        status:
+          type: string
+          enum:
+            - ACCEPTED
+            - ALREADY_REPORTED
+            - BAD_GATEWAY
+            - BAD_REQUEST
+            - BANDWIDTH_LIMIT_EXCEEDED
+            - CHECKPOINT
+            - CONFLICT
+            - CONTINUE
+            - CREATED
+            - DESTINATION_LOCKED
+            - EXPECTATION_FAILED
+            - FAILED_DEPENDENCY
+            - FORBIDDEN
+            - FOUND
+            - GATEWAY_TIMEOUT
+            - GONE
+            - HTTP_VERSION_NOT_SUPPORTED
+            - IM_USED
+            - INSUFFICIENT_SPACE_ON_RESOURCE
+            - INSUFFICIENT_STORAGE
+            - INTERNAL_SERVER_ERROR
+            - I_AM_A_TEAPOT
+            - LENGTH_REQUIRED
+            - LOCKED
+            - LOOP_DETECTED
+            - METHOD_FAILURE
+            - METHOD_NOT_ALLOWED
+            - MOVED_PERMANENTLY
+            - MOVED_TEMPORARILY
+            - MULTIPLE_CHOICES
+            - MULTI_STATUS
+            - NETWORK_AUTHENTICATION_REQUIRED
+            - NON_AUTHORITATIVE_INFORMATION
+            - NOT_ACCEPTABLE
+            - NOT_EXTENDED
+            - NOT_FOUND
+            - NOT_IMPLEMENTED
+            - NOT_MODIFIED
+            - NO_CONTENT
+            - OK
+            - PARTIAL_CONTENT
+            - PAYLOAD_TOO_LARGE
+            - PAYMENT_REQUIRED
+            - PERMANENT_REDIRECT
+            - PRECONDITION_FAILED
+            - PRECONDITION_REQUIRED
+            - PROCESSING
+            - PROXY_AUTHENTICATION_REQUIRED
+            - REQUESTED_RANGE_NOT_SATISFIABLE
+            - REQUEST_ENTITY_TOO_LARGE
+            - REQUEST_HEADER_FIELDS_TOO_LARGE
+            - REQUEST_TIMEOUT
+            - REQUEST_URI_TOO_LONG
+            - RESET_CONTENT
+            - SEE_OTHER
+            - SERVICE_UNAVAILABLE
+            - SWITCHING_PROTOCOLS
+            - TEMPORARY_REDIRECT
+            - TOO_EARLY
+            - TOO_MANY_REQUESTS
+            - UNAUTHORIZED
+            - UNAVAILABLE_FOR_LEGAL_REASONS
+            - UNPROCESSABLE_ENTITY
+            - UNSUPPORTED_MEDIA_TYPE
+            - UPGRADE_REQUIRED
+            - URI_TOO_LONG
+            - USE_PROXY
+            - VARIANT_ALSO_NEGOTIATES
+        view:
+          $ref: "#/components/schemas/View"
+        viewName:
+          type: string
+      title: ModelAndView
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        unpaged:
+          type: boolean
+      title: Pageable
+    RegisterReviewResponse:
+      type: object
+      properties:
+        reviewId:
+          type: string
+          format: uuid
+      title: RegisterReviewResponse
+    ReviewImageInfo:
+      type: object
+      properties:
+        fileId:
+          type: string
+        fileUri:
+          type: string
+      title: ReviewImageInfo
+    ReviewInfo:
+      type: object
+      properties:
+        answer:
+          type: string
+        answerStatus:
+          type: string
+          enum:
+            - ANSWER_COMPLETE
+            - ANSWER_INCOMPLETE
+        orderId:
+          type: string
+          format: uuid
+        rating:
+          type: number
+          format: double
+        reviewContent:
+          type: string
+        reviewId:
+          type: string
+          format: uuid
+        reviewImages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReviewImageInfo"
+        updatedAt:
+          type: string
+          format: date-time
+      title: ReviewInfo
+    ReviewsInfo:
+      type: object
+      properties:
+        answerIncompleteTotalElements:
+          type: integer
+          format: int32
+        averageRatings:
+          type: string
+        reviewInfos:
+          $ref: "#/components/schemas/Page_ReviewInfo_"
+        totalElements:
+          type: integer
+          format: int32
+      title: ReviewsInfo
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+      title: Sort
+    CommonResponse_object_:
+      type: object
+      properties:
+        data:
+          type: object
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
+      title: CommonResponse«object»
+    CommonResponse_RegisterReviewResponse_:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/RegisterReviewResponse"
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
+      title: CommonResponse«RegisterReviewResponse»
+    CommonResponse_ReviewInfo_:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ReviewInfo"
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
+      title: CommonResponse«ReviewInfo»
+    CommonResponse_ReviewsInfo_:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ReviewsInfo"
+        errorCode:
+          type: string
+          enum:
+            - DUPLICATE
+            - FORBIDDEN
+            - ILLEGAL_STATE
+            - INTERNAL_SERVER_ERROR
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - UNAUTHORIZED
+        message:
+          type: string
+      title: CommonResponse«ReviewsInfo»
+    Page_ReviewInfo_:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReviewInfo"
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        size:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/Sort"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+      title: Page«ReviewInfo»

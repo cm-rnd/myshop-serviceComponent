@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: 공지사항관리
+  description: |-
+    Tmax Commerce 제품 MyShopStudio(점주용)
+      - 'GNB/공지사항관리'  서비스컴포넌트
+      - 점주 대상으로 시스템에 대한 공지사항목록을 조회하는 기능 존재 (admin 시스템 상 조회 기능만 필요)
+      
+        * TMAX admin에 공지사항 등록, 수정, 삭제에 대한 기능 제공될 것으로 예상됨
+        * 해당 기능은 미리 추가해두는 것으로 진행
+  version: 1.0.11
+servers:
+  - url: sample
+tags:
+  - name: announcement
+    description: 공지사항
+  - name: announcement (와플 게시판)
+    description: |-
+      - 공지사항은 전형적인 게시판형 기능에 속함
+      - 게시판 관련 컴포넌트는 와플 게시판을 통해 구현한다는 내용이 있었음 
+      - 해당 내용에 대한 진척사항, 히스토리 파악 필요
+paths:
+  /announcement:
+    get:
+      tags:
+        - announcement
+      summary: 공지사항목록 조회
+      description: GNB 내 공지사항 아이콘 클릭 시 공지사항 목록을 조회한다.
+      operationId: findAnnouncement
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: keyword
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Announcement"
+    post:
+      tags:
+        - announcement
+      summary: 공지사항 등록 ( tmax admin 사용 )
+      description: 공지사항을 등록한다
+      operationId: addAnnouncement
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 공지사항을 신규로 등록한다
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnouncementRegisterInfo"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+
+  /announcement/{announcementId}:
+    put:
+      tags:
+        - announcement
+      summary: 공지사항 수정 ( tmax admin 사용 )
+      description: 공지사항을 수정한다
+      operationId: updateAnnouncement
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: announcementId
+          in: path
+          description: announcementId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 등록된 카테고리의 기본 값을 수정한다.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Announcement"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+    delete:
+      tags:
+        - announcement
+      summary: 공지사항 삭제 ( tmax admin 사용 )
+      description: 공지사항을 삭제한다
+      operationId: deleteAnnouncement
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: announcementId
+          in: path
+          description: announcementId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+
+components:
+  schemas:
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 공지사항Id
+          example: 10
+        title:
+          type: string
+          description: 공지사항 제목
+          example: (긴급) 공지
+        content:
+          type: string
+          description: 공지사항 내용
+          example: this is sample content
+        date:
+          type: string
+          description: 작성일자
+          example: 2023-03-07
+        image:
+          type: array
+          items:
+            type: string
+          description: 상품 이미지
+          example: urltest
+      xml:
+        name: ammouncement
+
+    AnnouncementRegisterInfo:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 공지사항 제목
+          example: (긴급) 공지
+        description:
+          type: string
+          description: 공지사항 상세 내용
+          example: this is sample description
+        date:
+          type: string
+          description: 작성일자
+          example: 2023-03-07
+        images:
+          type: array
+          items:
+            type: string
+          description: 상품 이미지
+          example: url,test
+      xml:
+        name: ammouncement
