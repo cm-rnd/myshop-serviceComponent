@@ -20,6 +20,17 @@ components:
         - asc
         - desc
 
+    ErrorCode:
+      type: string
+      enum:
+        - DUPLICATE
+        - FORBIDDEN
+        - ILLEGAL_STATE
+        - INTERNAL_SERVER_ERROR
+        - INVALID_PARAMETER
+        - NOT_FOUND
+        - UNAUTHORIZED
+
     Pageable:
       type: object
       properties:
@@ -77,14 +88,6 @@ components:
         data:
           type: object
         errorCode:
-          type: string
-          enum:
-            - DUPLICATE
-            - FORBIDDEN
-            - ILLEGAL_STATE
-            - INTERNAL_SERVER_ERROR
-            - INVALID_PARAMETER
-            - NOT_FOUND
-            - UNAUTHORIZED
+          $ref: "#/components/schemas/ErrorCode"
         message:
           type: string
