@@ -97,7 +97,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+                $ref: "#/components/schemas/ShopInfoWithCommonResponse"
         "401":
           description: Unauthorized
         "403":
@@ -125,7 +125,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+                $ref: "#/components/schemas/ShopInfoWithCommonResponse"
         "401":
           description: Unauthorized
         "403":
@@ -153,7 +153,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ShopInfo>>"
+                $ref: "#/components/schemas/ShopInfoWithCommonResponse"
         "401":
           description: Unauthorized
         "403":
@@ -204,7 +204,7 @@ paths:
           name: sort
           description: 정렬 기준
           schema:
-            $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+            $ref: "../commonSchemas.yaml#/components/schemas/SortType"
         - in: query
           name: status
           description: 주문 상태
@@ -216,7 +216,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<Page<<ToGoOrderInfo>>>>"
+                $ref: "#/components/schemas/ToGoOrderInfoWithPageWithCommonResponse"
         "401":
           description: Unauthorized
         "403":
@@ -245,7 +245,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+                $ref: "#/components/schemas/ToGoOrderDetailInfoWithCommonResponse"
         "401":
           description: Unauthorized
         "403":
@@ -294,7 +294,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+                $ref: "#/components/schemas/ToGoOrderDetailInfoWithCommonResponse"
         "204":
           description: No Content
         "401":
@@ -343,7 +343,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CommonResponse<<ToGoOrderDetailInfo>>"
+                $ref: "#/components/schemas/ToGoOrderDetailInfoWithCommonResponse"
         "204":
           description: No Content
         "401":
@@ -583,28 +583,28 @@ components:
           description: 주문이 업데이트 된 시각
           type: string
           format: date-time
-    CommonResponse<<ShopInfo>>:
-      title: CommonResponse<<ShopInfo>>
+    ShopInfoWithCommonResponse:
+      title: ShopInfoWithCommonResponse
       type: object
       properties:
         data:
           $ref: "#/components/schemas/ShopInfo"
         errorCode:
-          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+          $ref: "../commonSchemas.yaml#/components/schemas/ErrorCode"
         message:
           type: string
-    CommonResponse<<ToGoOrderDetailInfo>>:
-      title: CommonResponse<<ToGoOrderDetailInfo>>
+    ToGoOrderDetailInfoWithCommonResponse:
+      title: ToGoOrderDetailInfoWithCommonResponse
       type: object
       properties:
         data:
           $ref: "#/components/schemas/ToGoOrderDetailInfo"
         errorCode:
-          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+          $ref: "../commonSchemas.yaml#/components/schemas/ErrorCode"
         message:
           type: string
-    Page<<ToGoOrderInfo>>:
-      title: Page<<ToGoOrderInfo>>
+    ToGoOrderInfoWithPage:
+      title: ToGoOrderInfoWithPage
       type: object
       properties:
         content:
@@ -624,26 +624,26 @@ components:
           type: integer
           format: int32
         pageable:
-          $ref: "./commonSchemas.yaml#/components/schemas/Pageable"
+          $ref: "../commonSchemas.yaml#/components/schemas/Pageable"
         size:
           type: integer
           format: int32
         sort:
-          $ref: "./commonSchemas.yaml#/components/schemas/SortType"
+          $ref: "../commonSchemas.yaml#/components/schemas/SortType"
         totalElements:
           type: integer
           format: int64
         totalPages:
           type: integer
           format: int32
-    CommonResponse<<Page<<ToGoOrderInfo>>>>:
-      title: CommonResponse<<Page<<ToGoOrderInfo>>>>
+    ToGoOrderInfoWithPageWithCommonResponse:
+      title: ToGoOrderInfoWithPageWithCommonResponse
       type: object
       properties:
         data:
-          $ref: "#/components/schemas/Page<<ToGoOrderInfo>>"
+          $ref: "#/components/schemas/ToGoOrderInfoWithPage"
         errorCode:
-          $ref: "./commonSchemas.yaml#/components/schemas/ErrorCode"
+          $ref: "../commonSchemas.yaml#/components/schemas/ErrorCode"
         message:
           type: string
     ChangeToGoOrderStatusRequest:
