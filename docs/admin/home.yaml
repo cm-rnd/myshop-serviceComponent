@@ -1,0 +1,255 @@
+openapi: 3.0.3
+info:
+  title: MyShop Service Component 설계 - OpenAPI 3.0
+  description: |-
+    Tmax Commerce 제품 MyShop에서 사용되는 Service Component 설계 문서입니다.
+    - 설계형태 : OpenAPI Specification 3.0 기준 REST API
+    - SuperUX의 '외부API 설정하기'에서 REST API 방식을 채택하므로 현 문서에서도 그에 상응하게 정의함
+    - 주요 정의사항 : repository readme 파일 참고
+
+    메인도메인 : 홈화면
+    - 오늘 현황 (today)
+    - 주문 현황 (orders)
+    - 메모 (notes)
+
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://sample.io
+tags:
+  - name: home
+    description: 홈 화면(도메인)에서 다루는 API를 정의합니다.
+  - name: today
+  - name: orders
+  - name: notes
+paths:
+  /home/today:
+    get:
+      tags:
+        - today
+      summary: 오늘 현황
+      description: Get summary of today by shop id
+      operationId: today
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Today'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+  /home/orders:
+    get:
+      tags:
+        - orders
+      summary: 오늘 주문 현황
+      description: Get summary of orders of the day by shop id
+      operationId: homeOrders
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeOrderStatus'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+  /home/notes:
+    description: 점주용 메모
+    get:
+      tags:
+        - notes
+      summary: 작성된 메모 리스트
+      description: Get saved notes by shop id
+      operationId: notes
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeOrderStatus'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - notes
+      summary: 새로운 메모 작성
+      description: create new note by shop id
+      operationId: createNewNote
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    put:
+      tags:
+        - notes
+      summary: 메모 체크 수정
+      description: update note status by note id
+      operationId: updateNote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                noteId:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - notes
+      summary: 메모 삭제
+      description: delete note by note id
+      operationId: deleteNote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                noteId:
+                  type: string
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Shop Not Found
+        '405':
+          description: Validation exception
+components:
+  schemas:
+    Tendency:
+      description: 매출 경향성
+      type: string
+      enum:
+        - INCREASE
+        - DECREASE
+    SalesTotal:
+      description: 오늘 매출 총 액과, 전일/ 전주/ 전년도 대비 매출 증감 추이
+      type: object
+      properties:
+        amount:
+          type: number
+          format: int64
+          example: 100000
+        day:
+          $ref: '#/components/schemas/Tendency'
+        week:
+          $ref: '#/components/schemas/Tendency'
+        year:
+          $ref: '#/components/schemas/Tendency'
+    TopSales:
+      description: 매출 상위 메뉴 목록
+      type: array
+      items:
+        type: string
+      example: ['고구마 샐러드', '떡갈비 샌드위치']
+    Today:
+      description: 오늘 매출 현황
+      type: object
+      properties:
+        salesTotal:
+          $ref: '#/components/schemas/SalesTotal'
+        topSales:
+          $ref: '#/components/schemas/TopSales'
+    HomeOrder:
+      description: 홈화면에서 노출되는 주문 관련 정보
+      type: object
+      properties:
+        orderId:
+          description: 주문 id
+          type: string
+        orderStatus:
+          description: 주문 상태
+          oneOf:
+            - type: string
+            - type: number
+        pickupTime:
+          description: 픽업 시간
+          type: number
+        pickupNumber:
+          oneOf:
+            - type: string
+            - type: number
+        totalMenuCount:
+          description: 총 메뉴 개수
+          type: number
+        totalMenuAmount:
+          description: 총 주문 금액
+          type: number
+    HomeOrderStatus:
+      description: 홈 화면에서 노출되는 주문 현황
+      type: object
+      properties:
+        newOrderCount:
+          description: 새로운 주문 개수
+          type: number
+        newOrders:
+          description: 최신 주문 3개를 담고 있는 리스트
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeOrder'
+        onGoingOrderCount:
+          description: 진행 중 주문 개수
+          type: number
+        onGoingOrders:
+          description: 진행중인 주문 3개를 담고 있는 리스트
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeOrder'
+        completedOrderCount:
+          description: 완료된 주문 개수
+          type: number
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+          example: 'yyyy-MM-ddTHH:mm:ss'
+        checked:
+          type: boolean
+          example: false

@@ -4,7 +4,7 @@ info:
   description: |-
     Tmax Commerce 제품 MyShop에서 사용되는 Service Component 설계 문서입니다.
     - 설계형태 : OpenAPI Specification 3.0 기준 REST API
-    - SuperUX의 '외부API 설정하기'에서 REST API 방식을 채택하므로 현 문서에서도 그에 상응하게 정의함
+    - SuperUX의 '외부API 설ㅁㅁ정하기'에서 REST API 방식을 채택하므로 현 문서에서도 그에 상응하게 정의함
     - 주요 정의사항 : repository readme 파일 참고
 
     메인도메인 : 매장 정보 설정 
