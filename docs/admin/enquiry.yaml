@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: 문의관리
+  description: |-
+    Tmax Commerce 제품 MyShopStudio(점주용)
+      - '문의관리'  서비스컴포넌트
+      - 해당 Shop에 대해 고객으로 부터 발생된 문의를 관리하는 기능
+        - 해당 메뉴에선 목록조회 / 목록수정(답변작성) 의 기능만 제공
+        - 주문 단건주문조회 API 연동 필요 (주문ID 존재 시: /togo-order/{toGoOrderId )
+      - 현 버전 기획 기반으로 구성
+  version: 1.0.11
+servers:
+  - url: sample
+tags:
+  - name: enquiry
+    description: 문의관리
+  - name: enquiry (와플 게시판)
+    description: |-
+      - 문의는 전형적인 게시판형 기능에 속함
+      - 게시판 관련 컴포넌트는 와플 게시판을 통해 구현한다는 내용이 있었음 
+      - 해당 내용에 대한 진척사항, 히스토리 파악 필요
+paths:
+  /enquiry:
+    get:
+      tags:
+        - enquiry
+      summary: 문의목록 조회
+      description: 고객관리 > 문의관리 문의목록을 조회한다.
+      operationId: findEnquiry
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: keyword
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: startDate
+          schema:
+            type: string
+        - name: finishDate
+          in: query
+          description: finishDate
+          schema:
+            type: string
+        - name: replyed
+          in: query
+          description: replyed
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Enquiry"
+
+  /enquiry/{enquiryId}:
+    put:
+      tags:
+        - enquiry
+      summary: 문의답변 등록
+      description: 문의답변을 등록한다
+      operationId: updateEnquiryReply
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: enquiryId
+          in: path
+          description: enquiryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 등록된 문의의 답변을 등록한다
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Enquiry"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enquiry"
+    delete:
+      tags:
+        - enquiry
+      summary: 문의답변 삭제
+      description: 문의답변을 삭제한다
+      operationId: deleteEnquiryReply
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: enquiryId
+          in: path
+          description: enquiryId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enquiry"
+
+components:
+  schemas:
+    Enquiry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: 문의 Id
+          example: 10
+        number:
+          type: string
+          format: int64
+          description: 문의번호
+          example: 10
+        question:
+          type: string
+          description: 문의내용
+          example: 바스크 치즈 케이크 품절 언제 풀리나요?
+        answer:
+          type: string
+          description: 답변내용
+          example: 내일 풀립니다
+        images:
+          description: 이미지
+          type: array
+          items:
+            type: object
+            properties:
+              fileId:
+                type: string
+                description: 이미지파일ID
+                example: 10
+              fileUri:
+                type: string
+                description: 이미지URI
+                example: 1231231asd
+        orderId:
+          type: string
+          description: 주문번호
+          example: 하도야지
+        nickname:
+          type: string
+          description: 작성자
+          example: 하도야지
+        replyed:
+          type: boolean
+          description: 답변여부
+          example: true
+      xml:
+        name: enquiry
