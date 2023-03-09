@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: FAQ상세
+  description: |-
+    Tmax Commerce 제품 MyShopStudio(고객용)
+      - 'FAQ상세'  서비스컴포넌트
+      - 해당 Shop에 대해 고객이 자주 묻는 질문(FAQ)이 목록 형태로 제공되며, 질문 클릭 시 상세 내용을 확인할 수 있는 기능
+      - 이전 버전 기획 기반으로 구성
+  version: 1.0.11
+servers:
+  - url: sample
+tags:
+  - name: faq
+    description: FAQ상세
+  - name: faq (와플 게시판)
+    description: |-
+      - FAQ는 전형적인 게시판형 기능에 속함
+      - 게시판 관련 컴포넌트는 와플 게시판을 통해 구현한다는 내용이 있었음 
+      - 해당 내용에 대한 진척사항, 히스토리 파악 필요
+paths:
+  /faq:
+    get:
+      tags:
+        - faq
+      summary: FAQ 목록 조회
+      description: 고객관리 > FAQ관리 FAQ 목록을 조회한다.
+      operationId: findFAQ
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: keyword
+          schema:
+            type: string
+        - name: faqType
+          in: query
+          description: faqType
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FAQ"
+
+  /faq/faqType:
+    get:
+      tags:
+        - faq
+      summary: FAQ 유형 목록 조회
+      description: FAQ유형 목록을 조회한다.
+      operationId: findFAQType
+      parameters:
+        - name: shopId
+          in: header
+          description: shopId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FAQType"
+
+components:
+  schemas:
+    FAQ:
+      type: object
+      properties:
+        id:
+          type: string
+          format: int64
+          description: FAQ Id
+          example: 10
+        type:
+          $ref: "#/components/schemas/FAQType"
+        title:
+          type: string
+          description: FAQ 제목
+          example: 현금영수증을 신청하고 싶어요
+        content:
+          type: string
+          description: FAQ 내용
+          example: this is sample content
+        activated:
+          type: boolean
+          description: 활성화상태
+          example: true
+        date:
+          type: string
+          description: 작성일자
+          example: 2023-03-07
+      xml:
+        name: faq
+
+    FAQType:
+      type: object
+      description: FAQ 유형
+      properties:
+        id:
+          type: string
+          description: FAQ 유형ID
+          example: 10
+        title:
+          type: string
+          description: FAQ 유형 제목
+          example: 상품문의
+        order:
+          type: number
+          description: FAQ 유형 순서
+          example: 상품문의
+      xml:
+        name: faqType
