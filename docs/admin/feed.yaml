@@ -544,7 +544,7 @@ paths:
           schema:
             type: array
             items:
-              type: file
+              type: string
         - name: shopId
           in: path
           description: shopId
