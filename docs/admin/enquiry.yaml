@@ -64,7 +64,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Enquiry"
 
-  /enquiry/{enquiryId}:
+  /enquiry/{enquiryId}/reply:
     put:
       tags:
         - enquiry
